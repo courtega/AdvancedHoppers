@@ -1,8 +1,16 @@
-name: HopperFilter
+name: FilteredHoppers
 version: "${project.version}"
-main: net.earthmc.hopperfilter.HopperFilter
+main: com.courtega.advancedhoppers.FilteredHoppersPlugin
 api-version: "1.20"
-authors: [Fruitloopins]
-description: Name hoppers. Filter items.
-website: https://earthmc.net
+authors: [ courtega, Fruitloopins ]
+description: Create filtered hoppers using expressions.
+website: https://courtega.com
 folia-supported: true
+
+commands:
+  advancedhoppers:
+    description: Your description
+    usage: /advancedhoppers [help]
+
+libraries:
+  - io.github.rysefoxx.inventory:RyseInventory-Plugin:1.5.7
