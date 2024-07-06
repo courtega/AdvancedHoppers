@@ -13,7 +13,7 @@ in five years and wanted a little project to do.
 
 1. Sneak and left-click a hopper with an item in your hand to filter for just that item.
 2. Sneak and left-click a hopper with nothing in your hand to write a custom filter expression.
-    - Do `/filteredhoppers help` for a list of filtering keywords (aka "operators") and their respective meanings.
+    - Do `/advancedhoppers help` for a list of filtering keywords (aka "operators") and their respective meanings.
 3. You are done.
 
 ## Planned features and changes
