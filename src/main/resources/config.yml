@@ -1,0 +1,11 @@
+not: '!'
+and: '&'
+or: '|'
+contains: '*'
+tag: '#'
+enchant: '+'
+starts_with: "^"
+ends_with: "$"
+dismiss: ":nvm"
+reset: ":reset"
+

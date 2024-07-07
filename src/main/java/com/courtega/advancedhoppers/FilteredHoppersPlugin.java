@@ -1,7 +1,7 @@
 package com.courtega.advancedhoppers;
 
-import com.courtega.advancedhoppers.cmds.HelpCommand;
-import com.courtega.advancedhoppers.cmds.TabComplete;
+import com.courtega.advancedhoppers.cmds.HelpCommandEx;
+import com.courtega.advancedhoppers.cmds.HelpTabComplete;
 import com.courtega.advancedhoppers.listener.HopperRenameListenerEx;
 import com.courtega.advancedhoppers.listener.InventoryActionListenerEx;
 import net.kyori.adventure.text.Component;
@@ -28,9 +28,13 @@ public final class FilteredHoppersPlugin extends JavaPlugin {
                 new InventoryActionListenerEx(this)
         );
 
+        this.saveDefaultConfig();
+
         PluginCommand rootCommand = this.getCommand("advancedhoppers");
-        rootCommand.setExecutor(new HelpCommand());
-        rootCommand.setTabCompleter(new TabComplete());
+        assert rootCommand != null;
+
+        rootCommand.setExecutor(new HelpCommandEx(this));
+        rootCommand.setTabCompleter(new HelpTabComplete());
 
         logger = this.getLogger();
     }

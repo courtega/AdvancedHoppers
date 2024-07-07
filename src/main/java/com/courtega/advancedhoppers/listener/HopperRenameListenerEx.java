@@ -16,6 +16,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,10 +26,21 @@ public class HopperRenameListenerEx implements Listener {
     public final static String CANCEL_COMMAND = ":nvm";
     private static final Map<Player, Hopper> HOPPER_RENAME_INTERACTIONS = new HashMap<>();
     private static final int CANCELLATION_RADIUS = 9;
+    private static final int INPUT_PROMPT_TIMEOUT = 20;
+    final BukkitScheduler Scheduler;
     private final FilteredHoppersPlugin Plugin;
 
     public HopperRenameListenerEx(FilteredHoppersPlugin plugin) {
         this.Plugin = plugin;
+        this.Scheduler = plugin.getServer().getScheduler();
+    }
+
+    private static int abortRenameOperation(Player player, Hopper hopper) {
+        if (HOPPER_RENAME_INTERACTIONS.remove(player) == null) return 1;
+
+        player.playSound(hopper.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.3F, new Random().nextFloat(1.25F, 1.5F));
+        player.sendMessage(Messaging.RENAME_CANCELLED);
+        return 0;
     }
 
     @EventHandler
@@ -72,9 +84,7 @@ public class HopperRenameListenerEx implements Listener {
         final double distanceFromHopper = event.getTo().distance(hopperLocation);
 
         if (distanceFromHopper > CANCELLATION_RADIUS) {
-            HOPPER_RENAME_INTERACTIONS.remove(player);
-            player.playSound(hopper.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.3F, new Random().nextFloat(1.25F, 1.5F));
-            player.sendMessage(Messaging.RENAME_CANCELLED);
+            abortRenameOperation(player, hopper);
         }
     }
 
@@ -86,16 +96,14 @@ public class HopperRenameListenerEx implements Listener {
         if (hopper == null) return;
 
         event.setCancelled(true);
-        HOPPER_RENAME_INTERACTIONS.remove(player);
 
         final String originalMessage = FilteredHoppersPlugin.serialiseComponent(event.originalMessage());
         if (originalMessage.equals(CANCEL_COMMAND)) {
-            player.playSound(hopper.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.3F, new Random().nextFloat(1.25F, 1.5F));
-            player.sendMessage(Messaging.RENAME_CANCELLED);
-            return;
+            abortRenameOperation(player, hopper);
+        } else {
+            HOPPER_RENAME_INTERACTIONS.remove(player);
+            renameHopper(player, hopper, originalMessage);
         }
-
-        renameHopper(player, hopper, originalMessage);
     }
 
     // Prompt `player` to rename `hopper` based on their input from chat.
@@ -103,16 +111,17 @@ public class HopperRenameListenerEx implements Listener {
         HOPPER_RENAME_INTERACTIONS.put(player, hopper);
         player.playSound(hopper.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.1F, new Random().nextFloat(0.55F, 1.25F));
         player.sendMessage(Messaging.REQUEST_CHAT_INPUT);
+
+        Scheduler.runTaskLater(Plugin, () -> abortRenameOperation(player, hopper), 20L * INPUT_PROMPT_TIMEOUT);
         return 0;
     }
 
     // Overload: Rename `hopper` to `name`
     private int renameHopper(final Player player, final Hopper hopper, final String name) {
-        final Component textComponent = name.equals("all") ? null : Component.text(name);
+        final Component textComponent = name.equals(InventoryActionListenerEx.RESET_COMMAND) ? null : Component.text(name);
         hopper.customName(textComponent);
 
-        final FilteredHoppersPlugin filteredHoppersPlugin = Plugin;
-        filteredHoppersPlugin.getServer().getRegionScheduler().run(filteredHoppersPlugin, hopper.getLocation(), task -> hopper.update());
+        Plugin.getServer().getRegionScheduler().run(Plugin, hopper.getLocation(), _ -> hopper.update());
 
         player.playSound(hopper.getLocation(), Sound.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, 0.75F, new Random().nextFloat(1.25F, 1.5F));
         player.sendMessage(Messaging.EXPR_SET(name));

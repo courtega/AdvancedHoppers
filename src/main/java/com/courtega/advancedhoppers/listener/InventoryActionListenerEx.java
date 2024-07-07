@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 public class InventoryActionListenerEx implements Listener {
 
     //region Constants
+    public final static String RESET_COMMAND = ":reset";
     public final static char NOT_OPERATOR = '!';
     public final static char OR_OPERATOR = '|';
     public final static char AND_OPERATOR = '&';
@@ -35,10 +36,9 @@ public class InventoryActionListenerEx implements Listener {
     public final static char ENCHANT_LEVEL_DELIMITER = ':';
     public final static long PROHIBITED_ITEM_CACHE_ENTRY_EXPIRY = 5L;
     //endregion
-
+    final BukkitScheduler Scheduler;
     private final FilteredHoppersPlugin Plugin;
     private final Map<Integer, Integer> ProhibitedItemsEx = new HashMap<>();
-    BukkitScheduler Scheduler;
 
     public InventoryActionListenerEx(FilteredHoppersPlugin plugin) {
         this.Plugin = plugin;
@@ -89,11 +89,7 @@ public class InventoryActionListenerEx implements Listener {
                 boolean permitted = switch (prefix) {
                     default -> (andOperand.equals(itemName));
 
-                    case NOT_OPERATOR -> {
-                        // My dumbass looked at this and had a not op on yield
-                        // If it's prohibited, then it's allowed, so yield true.
-                        yield isItemProhibited(itemStack, subOperand);
-                    }
+                    case NOT_OPERATOR -> isItemProhibited(itemStack, subOperand);
                     case CONTAINS_OPERATOR -> itemName.contains(subOperand);
                     case STARTS_OPERATOR -> itemName.startsWith(subOperand);
                     case ENDS_OPERATOR -> itemName.endsWith(subOperand);
