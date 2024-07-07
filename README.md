@@ -25,12 +25,14 @@ in five years and wanted a little project to do.
     - Do `/advancedhoppers help` for a list of filtering keywords (aka "operators") and their respective meanings.
 3. You are done.
 
-## Planned features and changes
+## Current roadmap
 
-- Deference of constants to a YAML file for easy modification by administrators.
-- More performance tweaking and optimizations.
-- Refactoring, refactoring, refactoring.
-- Port to Kotlin because Java sucks
+- Deference to a `config.yml` for operators' character representations
+- Add additional qualifiers (durability, potion effects, custom-named items, etc.)
+- Further optimize the codebase
+- An optional, more user-friendly syntax (?)
+- Backwards compatibility for older versions (?)
+- Port to Kotlin (?)
 
 ## Blah, blah, legalese
 
