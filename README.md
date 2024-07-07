@@ -3,6 +3,15 @@
 Simplify hopper configurations and save on materials with this small, performant utility plugin. Filter expressions
 follow a simple syntax that takes less than a minute to master.
 
+## What's different?
+
+- Added chat integration, notifying you when you're editing a filter expression, and notifying you when an edit was cancelled.
+- Items that aren't accepted by the filtered hopper will no longer clog it!
+- Slight performance optimization (in my basic testing, RAM usage was reduced by 20%, but YMMV)
+- Removed grouping separator and replaced it with an OR operator.
+- Fixed enchantment/level delimitation issue by switching from `_` to a more intuitive `:`.
+- Many more things, just check commits
+
 ## Contributors
 
 If you'd like to contribute, feel free to make a pull request, and you will be credited accordingly. I'm probably not
@@ -27,17 +36,6 @@ in five years and wanted a little project to do.
 
 I don't care if you use this plugin or its code to go make your own thing, but you must give me credit, and your project
 must be licensed under GPLv3.
-
-### Index of changes from HopperFilter
-
-- Added chat integration
-    - Notified in chat when editing a filter expression
-    - Notified in chat when a filter expression change is cancelled
-- Excluded items residing in the first slot of a source container will no longer "clog up" your filtered hopper.
-- Some performance optimizations (maybe ~20% less memory consumption? YMMV)
-- Eradication of magic strings to make changes easier in the future (for example, if you want the `or` operator to be
-  represented by `🤷‍♂️` or something stupid like that)
-- A bunch of other shit just look at the commits
 
 ## Credits
 
