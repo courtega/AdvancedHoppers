@@ -30,6 +30,9 @@ must be licensed under GPLv3.
 
 ### Index of changes from HopperFilter
 
+- Added chat integration
+    - Notified in chat when editing a filter expression
+    - Notified in chat when a filter expression change is cancelled
 - Excluded items residing in the first slot of a source container will no longer "clog up" your filtered hopper.
 - Some performance optimizations (maybe ~20% less memory consumption? YMMV)
 - Eradication of magic strings to make changes easier in the future (for example, if you want the `or` operator to be
