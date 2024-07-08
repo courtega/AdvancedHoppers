@@ -1,0 +1,6 @@
+[Preferences]
+cancellation_radius = 7
+input_prompt_timeout = 20
+
+[Technical]
+discarded_item_cache_entry_expiry = 5

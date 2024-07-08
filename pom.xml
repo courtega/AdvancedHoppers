@@ -94,5 +94,11 @@
             <version>1.20.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.moandjiezana.toml</groupId>
+            <artifactId>toml4j</artifactId>
+            <version>0.7.1</version>
+            <scope>shade</scope>
+        </dependency>
     </dependencies>
 </project>

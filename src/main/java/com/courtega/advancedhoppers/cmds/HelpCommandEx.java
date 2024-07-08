@@ -18,17 +18,15 @@ public class HelpCommandEx implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
-        switch (args.length) {
-            case 0 -> {
-                sender.sendMessage(COMPONENT_SERIALIZER.deserialize("&7[&r    &d&lAdvancedHoppers&r by courtega    &7]&r\n"));
+        if (args.length == 0) {
+            sender.sendMessage(COMPONENT_SERIALIZER.deserialize("&7[&r    &d&lAdvancedHoppers&r by courtega    &7]&r\n"));
 
-                sender.sendMessage(COMPONENT_SERIALIZER.deserialize("&n# Syntax Reference&r\n"));
-                for (String k : Config.getKeys(true)) {
-                    String v = (String) Config.get(k);
-                    sender.sendMessage(COMPONENT_SERIALIZER.deserialize(k + " &7=&r " + "&b" + v + "&r"));
-                }
-                return true;
+            sender.sendMessage(COMPONENT_SERIALIZER.deserialize("&n# Syntax Reference&r\n"));
+            for (String k : Config.getKeys(true)) {
+                String v = (String) Config.get(k);
+                sender.sendMessage(COMPONENT_SERIALIZER.deserialize(k + " &7=&r " + "&b" + v + "&r"));
             }
+            return true;
         }
         return false;
     }

@@ -1,3 +1,5 @@
+dismiss: ":nvm"
+reset: ":reset"
 not: '!'
 and: '&'
 or: '|'
@@ -6,6 +8,3 @@ tag: '#'
 enchant: '+'
 starts_with: "^"
 ends_with: "$"
-dismiss: ":nvm"
-reset: ":reset"
-

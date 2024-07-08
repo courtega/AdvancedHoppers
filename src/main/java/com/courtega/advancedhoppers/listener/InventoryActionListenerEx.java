@@ -1,6 +1,7 @@
 package com.courtega.advancedhoppers.listener;
 
 import com.courtega.advancedhoppers.FilteredHoppersPlugin;
+import com.moandjiezana.toml.Toml;
 import org.bukkit.*;
 import org.bukkit.block.Hopper;
 import org.bukkit.enchantments.Enchantment;
@@ -34,15 +35,19 @@ public class InventoryActionListenerEx implements Listener {
     public final static char TAG_INDICATOR = '#';
     public final static char ENCHANT_INDICATOR = '+';
     public final static char ENCHANT_LEVEL_DELIMITER = ':';
-    public final static long PROHIBITED_ITEM_CACHE_ENTRY_EXPIRY = 5L;
     //endregion
-    final BukkitScheduler Scheduler;
+    public final long DiscardedItemCacheEntryExpiry;
+
+    private final BukkitScheduler Scheduler;
     private final FilteredHoppersPlugin Plugin;
     private final Map<Integer, Integer> ProhibitedItemsEx = new HashMap<>();
 
     public InventoryActionListenerEx(FilteredHoppersPlugin plugin) {
         this.Plugin = plugin;
+        Toml tomlConfig = plugin.getTomlConfig();
         this.Scheduler = plugin.getServer().getScheduler();
+
+        this.DiscardedItemCacheEntryExpiry = tomlConfig.getTable("Technical").getLong("discarded_item_cache_entry_expiry");
     }
 
     //region Private Methods
@@ -171,7 +176,7 @@ public class InventoryActionListenerEx implements Listener {
             event.setCancelled(true);
 
             ProhibitedItemsEx.put(item.hashCode(), destinationInventory.hashCode());
-            Scheduler.runTaskLaterAsynchronously(Plugin, () -> ProhibitedItemsEx.remove(item.hashCode()), 20L * PROHIBITED_ITEM_CACHE_ENTRY_EXPIRY);
+            Scheduler.runTaskLaterAsynchronously(Plugin, () -> ProhibitedItemsEx.remove(item.hashCode()), 20L * DiscardedItemCacheEntryExpiry);
         }
     }
 

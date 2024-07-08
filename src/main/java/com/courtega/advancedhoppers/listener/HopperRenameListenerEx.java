@@ -2,6 +2,7 @@ package com.courtega.advancedhoppers.listener;
 
 import com.courtega.advancedhoppers.FilteredHoppersPlugin;
 import com.courtega.advancedhoppers.Messaging;
+import com.moandjiezana.toml.Toml;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
@@ -25,14 +26,18 @@ import java.util.Random;
 public class HopperRenameListenerEx implements Listener {
     public final static String CANCEL_COMMAND = ":nvm";
     private static final Map<Player, Hopper> HOPPER_RENAME_INTERACTIONS = new HashMap<>();
-    private static final int CANCELLATION_RADIUS = 9;
-    private static final int INPUT_PROMPT_TIMEOUT = 20;
-    final BukkitScheduler Scheduler;
+    private final BukkitScheduler Scheduler;
+    private final int CANCELLATION_RADIUS;
+    private final int INPUT_PROMPT_TIMEOUT;
     private final FilteredHoppersPlugin Plugin;
 
     public HopperRenameListenerEx(FilteredHoppersPlugin plugin) {
         this.Plugin = plugin;
         this.Scheduler = plugin.getServer().getScheduler();
+        Toml tomlConfig = plugin.getTomlConfig();
+
+        this.CANCELLATION_RADIUS = Math.toIntExact(tomlConfig.getTable("Preferences").getLong("cancellation_radius"));
+        this.INPUT_PROMPT_TIMEOUT = Math.toIntExact(tomlConfig.getTable("Preferences").getLong("input_prompt_timeout"));
     }
 
     private static int abortRenameOperation(Player player, Hopper hopper) {

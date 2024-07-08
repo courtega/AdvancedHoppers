@@ -5,7 +5,8 @@ follow a simple syntax that takes less than a minute to master.
 
 ## What's different?
 
-- Added chat integration, notifying you when you're editing a filter expression, and notifying you when an edit was cancelled.
+- Added chat integration, notifying you when you're editing a filter expression, and notifying you when an edit was
+  cancelled.
 - Items that aren't accepted by the filtered hopper will no longer clog it!
 - Slight performance optimization (in my basic testing, RAM usage was reduced by 20%, but YMMV)
 - Removed grouping separator and replaced it with an OR operator.
