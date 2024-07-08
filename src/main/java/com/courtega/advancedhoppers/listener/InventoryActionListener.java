@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public class InventoryActionListenerEx implements Listener {
+public class InventoryActionListener implements Listener {
 
     //region Constants
     public final static String RESET_COMMAND = ":reset";
@@ -42,12 +42,26 @@ public class InventoryActionListenerEx implements Listener {
     private final FilteredHoppersPlugin Plugin;
     private final Map<Integer, Integer> ProhibitedItemsEx = new HashMap<>();
 
-    public InventoryActionListenerEx(FilteredHoppersPlugin plugin) {
+    public InventoryActionListener(FilteredHoppersPlugin plugin) {
         this.Plugin = plugin;
         Toml tomlConfig = plugin.getTomlConfig();
         this.Scheduler = plugin.getServer().getScheduler();
 
         this.DiscardedItemCacheEntryExpiry = tomlConfig.getTable("Technical").getLong("discarded_item_cache_entry_expiry");
+    }
+
+    public static Map<String, String> getConstants() {
+        Map<String, String> constants = new HashMap<>();
+        constants.put("reset", RESET_COMMAND);
+        constants.put("not", String.valueOf(NOT_OPERATOR));
+        constants.put("or", String.valueOf(OR_OPERATOR));
+        constants.put("and", String.valueOf(AND_OPERATOR));
+        constants.put("contains", String.valueOf(CONTAINS_OPERATOR));
+        constants.put("starts", String.valueOf(STARTS_OPERATOR));
+        constants.put("ends", String.valueOf(ENDS_OPERATOR));
+        constants.put("tag", String.valueOf(TAG_INDICATOR));
+        constants.put("enchant", String.valueOf(ENCHANT_INDICATOR));
+        return constants;
     }
 
     //region Private Methods

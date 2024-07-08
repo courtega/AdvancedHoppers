@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class HelpTabComplete implements TabCompleter {
+public class HelpTabCompleter implements TabCompleter {
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
         if (args.length == 1) {

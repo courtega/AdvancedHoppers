@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-public class HopperRenameListenerEx implements Listener {
+public class HopperRenameListener implements Listener {
     public final static String CANCEL_COMMAND = ":nvm";
     private static final Map<Player, Hopper> HOPPER_RENAME_INTERACTIONS = new HashMap<>();
     private final BukkitScheduler Scheduler;
@@ -31,7 +31,7 @@ public class HopperRenameListenerEx implements Listener {
     private final int INPUT_PROMPT_TIMEOUT;
     private final FilteredHoppersPlugin Plugin;
 
-    public HopperRenameListenerEx(FilteredHoppersPlugin plugin) {
+    public HopperRenameListener(FilteredHoppersPlugin plugin) {
         this.Plugin = plugin;
         this.Scheduler = plugin.getServer().getScheduler();
         Toml tomlConfig = plugin.getTomlConfig();
@@ -123,7 +123,7 @@ public class HopperRenameListenerEx implements Listener {
 
     // Overload: Rename `hopper` to `name`
     private int renameHopper(final Player player, final Hopper hopper, final String name) {
-        final Component textComponent = name.equals(InventoryActionListenerEx.RESET_COMMAND) ? null : Component.text(name);
+        final Component textComponent = name.equals(InventoryActionListener.RESET_COMMAND) ? null : Component.text(name);
         hopper.customName(textComponent);
 
         Plugin.getServer().getRegionScheduler().run(Plugin, hopper.getLocation(), _ -> hopper.update());

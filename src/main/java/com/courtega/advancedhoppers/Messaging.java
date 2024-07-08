@@ -5,7 +5,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
-import static com.courtega.advancedhoppers.listener.HopperRenameListenerEx.CANCEL_COMMAND;
+import static com.courtega.advancedhoppers.listener.HopperRenameListener.CANCEL_COMMAND;
 
 // TODO: Yes I know this is horrendous I am going to rework this messaging crap later
 public class Messaging {

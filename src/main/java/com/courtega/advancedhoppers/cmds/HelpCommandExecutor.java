@@ -1,20 +1,16 @@
 package com.courtega.advancedhoppers.cmds;
 
-import com.courtega.advancedhoppers.FilteredHoppersPlugin;
+import com.courtega.advancedhoppers.listener.InventoryActionListener;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
-public class HelpCommandEx implements CommandExecutor {
-    private final static LegacyComponentSerializer COMPONENT_SERIALIZER = LegacyComponentSerializer.legacyAmpersand();
-    private final FileConfiguration Config;
+import java.util.Map;
 
-    public HelpCommandEx(FilteredHoppersPlugin plugin) {
-        this.Config = plugin.getConfig();
-    }
+public class HelpCommandExecutor implements CommandExecutor {
+    private final static LegacyComponentSerializer COMPONENT_SERIALIZER = LegacyComponentSerializer.legacyAmpersand();
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
@@ -22,9 +18,8 @@ public class HelpCommandEx implements CommandExecutor {
             sender.sendMessage(COMPONENT_SERIALIZER.deserialize("&7[&r    &d&lAdvancedHoppers&r by courtega    &7]&r\n"));
 
             sender.sendMessage(COMPONENT_SERIALIZER.deserialize("&n# Syntax Reference&r\n"));
-            for (String k : Config.getKeys(true)) {
-                String v = (String) Config.get(k);
-                sender.sendMessage(COMPONENT_SERIALIZER.deserialize(k + " &7=&r " + "&b" + v + "&r"));
+            for (Map.Entry<String, String> kvp : InventoryActionListener.getConstants().entrySet()) {
+                sender.sendMessage(COMPONENT_SERIALIZER.deserialize(kvp.getKey() + " &7=&r " + "&b" + kvp.getValue() + "&r"));
             }
             return true;
         }
