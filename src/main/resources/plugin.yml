@@ -13,4 +13,4 @@ commands:
     usage: /advancedhoppers [help]
 
 libraries:
-  - io.github.rysefoxx.inventory:RyseInventory-Plugin:1.5.7
+  - com.moandjiezana.toml:toml4j:0.7.1
