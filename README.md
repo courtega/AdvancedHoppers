@@ -31,7 +31,6 @@ There are two primary ways of setting a filter:
 - Added a `locale.toml`! This lets servers targeting non-English-speaking player bases to easily translate dialogue into
   their native tongue!
 - Fixed a couple small bugs.
-- Fun statistics features (a hard "maybe")
 
 _Notes: I've decided to go with TOML as the configuration format of choice because I personally find YAML disgusting. I
 think that TOML is a fair balance between ease-of-use and structure._
@@ -51,6 +50,7 @@ mainly a side project for me to improve my Java skills, but I will try to update
 - Improve performance
 - Add support for comparative statements
 - Add backwards compatibility for older Minecraft versions
+- Fun statistics features (a hard "maybe")
 
 ## Blah, blah, legalese
 
