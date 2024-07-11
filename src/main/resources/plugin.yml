@@ -1,6 +1,6 @@
-name: FilteredHoppers
+name: AdvancedHoppers
 version: "${project.version}"
-main: com.courtega.advancedhoppers.FilteredHoppersPlugin
+main: com.courtega.advancedhoppers.AdvancedHoppersPlugin
 api-version: "1.20"
 authors: [ courtega, Fruitloopins ]
 description: Create filtered hoppers using expressions.
@@ -9,8 +9,8 @@ folia-supported: true
 
 commands:
   advancedhoppers:
-    description: Your description
-    usage: /advancedhoppers [help]
+    description: Create filtered hoppers using expressions.
+    usage: /advancedhoppers
 
 libraries:
   - com.moandjiezana.toml:toml4j:0.7.1

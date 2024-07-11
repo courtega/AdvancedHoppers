@@ -1,0 +1,7 @@
+[General]
+expression_prompt = "Enter a filter expression, or enter \"&b&o%s&r\" to cancel."     # 0: Dismiss command
+expression_prompt_abort = "Edit action cancelled."
+expression_set = "Filter expression set to \"&b&o%s&r\"."                             # 0: Expression
+
+[Commands]
+syntax_reference = "&lSyntax Reference&r"

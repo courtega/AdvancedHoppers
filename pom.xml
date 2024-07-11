@@ -9,7 +9,7 @@
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
-    <name>HopperFilter</name>
+    <name>AdvancedHoppers</name>
 
     <description>Simplify hopper configurations and save on materials with this small, performant utility plugin.
     </description>

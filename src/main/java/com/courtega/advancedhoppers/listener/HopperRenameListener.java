@@ -1,7 +1,7 @@
 package com.courtega.advancedhoppers.listener;
 
-import com.courtega.advancedhoppers.FilteredHoppersPlugin;
-import com.courtega.advancedhoppers.Messaging;
+import com.courtega.advancedhoppers.AdvancedHoppersPlugin;
+import com.courtega.advancedhoppers.Messenger;
 import com.moandjiezana.toml.Toml;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
@@ -25,27 +25,31 @@ import java.util.Random;
 
 public class HopperRenameListener implements Listener {
     public final static String CANCEL_COMMAND = ":nvm";
-    private static final Map<Player, Hopper> HOPPER_RENAME_INTERACTIONS = new HashMap<>();
+    private final static Map<Player, Hopper> HOPPER_RENAME_INTERACTIONS = new HashMap<>();
+    private final AdvancedHoppersPlugin Plugin;
+    private final Messenger Msger;
     private final BukkitScheduler Scheduler;
-    private final int CANCELLATION_RADIUS;
-    private final int INPUT_PROMPT_TIMEOUT;
-    private final FilteredHoppersPlugin Plugin;
+    private final int CancellationRadius;
+    private final int InputPromptTimeout;
 
-    public HopperRenameListener(FilteredHoppersPlugin plugin) {
+    public HopperRenameListener(AdvancedHoppersPlugin plugin) {
         this.Plugin = plugin;
         this.Scheduler = plugin.getServer().getScheduler();
-        Toml tomlConfig = plugin.getTomlConfig();
+        this.Msger = new Messenger(plugin);
+        final Toml tomlConfig = plugin.getTomlConfig();
 
-        this.CANCELLATION_RADIUS = Math.toIntExact(tomlConfig.getTable("Preferences").getLong("cancellation_radius"));
-        this.INPUT_PROMPT_TIMEOUT = Math.toIntExact(tomlConfig.getTable("Preferences").getLong("input_prompt_timeout"));
+        this.CancellationRadius = Math.toIntExact(tomlConfig.getTable("Preferences").getLong("cancellation_radius"));
+        this.InputPromptTimeout = Math.toIntExact(tomlConfig.getTable("Preferences").getLong("input_prompt_timeout"));
     }
 
-    private static int abortRenameOperation(Player player, Hopper hopper) {
-        if (HOPPER_RENAME_INTERACTIONS.remove(player) == null) return 1;
+    // region Event Handlers
+
+    private void abortRenameOperation(Player player, Hopper hopper) {
+        if (HOPPER_RENAME_INTERACTIONS.remove(player) == null) return;
 
         player.playSound(hopper.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.3F, new Random().nextFloat(1.25F, 1.5F));
-        player.sendMessage(Messaging.RENAME_CANCELLED);
-        return 0;
+        //player.sendMessage(Messaging.RENAME_CANCELLED);
+        Msger.sendInputPromptCancelled(player);
     }
 
     @EventHandler
@@ -88,10 +92,14 @@ public class HopperRenameListener implements Listener {
         final Location hopperLocation = hopper.getLocation();
         final double distanceFromHopper = event.getTo().distance(hopperLocation);
 
-        if (distanceFromHopper > CANCELLATION_RADIUS) {
+        if (distanceFromHopper > CancellationRadius) {
             abortRenameOperation(player, hopper);
         }
     }
+
+    // endregion
+
+    // region Internal Logic
 
     // If the source of the event is a player who was prompted to rename a hopper, use that input to rename the hopper.
     @EventHandler
@@ -102,7 +110,7 @@ public class HopperRenameListener implements Listener {
 
         event.setCancelled(true);
 
-        final String originalMessage = FilteredHoppersPlugin.serialiseComponent(event.originalMessage());
+        final String originalMessage = AdvancedHoppersPlugin.serialiseComponent(event.originalMessage());
         if (originalMessage.equals(CANCEL_COMMAND)) {
             abortRenameOperation(player, hopper);
         } else {
@@ -115,9 +123,10 @@ public class HopperRenameListener implements Listener {
     private int renameHopper(final Player player, final Hopper hopper) {
         HOPPER_RENAME_INTERACTIONS.put(player, hopper);
         player.playSound(hopper.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.1F, new Random().nextFloat(0.55F, 1.25F));
-        player.sendMessage(Messaging.REQUEST_CHAT_INPUT);
+        //player.sendMessage(Messaging.REQUEST_CHAT_INPUT);
+        Msger.sendInputPrompt(player);
 
-        Scheduler.runTaskLater(Plugin, () -> abortRenameOperation(player, hopper), 20L * INPUT_PROMPT_TIMEOUT);
+        Scheduler.runTaskLater(Plugin, () -> abortRenameOperation(player, hopper), 20L * InputPromptTimeout);
         return 0;
     }
 
@@ -129,7 +138,10 @@ public class HopperRenameListener implements Listener {
         Plugin.getServer().getRegionScheduler().run(Plugin, hopper.getLocation(), _ -> hopper.update());
 
         player.playSound(hopper.getLocation(), Sound.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, 0.75F, new Random().nextFloat(1.25F, 1.5F));
-        player.sendMessage(Messaging.EXPR_SET(name));
+        //player.sendMessage(Messaging.EXPR_SET(name));
+        Msger.sendExpressionSet(player, name);
         return 0;
     }
+
+    //endregion
 }

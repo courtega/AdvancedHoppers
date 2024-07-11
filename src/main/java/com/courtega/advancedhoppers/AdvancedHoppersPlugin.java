@@ -1,7 +1,6 @@
 package com.courtega.advancedhoppers;
 
 import com.courtega.advancedhoppers.cmds.HelpCommandExecutor;
-import com.courtega.advancedhoppers.cmds.HelpTabCompleter;
 import com.courtega.advancedhoppers.listener.HopperRenameListener;
 import com.courtega.advancedhoppers.listener.InventoryActionListener;
 import com.moandjiezana.toml.Toml;
@@ -16,10 +15,19 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public final class FilteredHoppersPlugin extends JavaPlugin {
+public final class AdvancedHoppersPlugin extends JavaPlugin {
+    private final static String TOML_CONFIG = "config.toml";
+    private final static String TOML_LOCALE = "locale.toml";
+    private final static ArrayList<String> TOML_CONFIGS = new ArrayList<>() {
+        {
+            add("config.toml");
+            add("locale.toml");
+        }
+    };
 
     public Logger logger;
 
@@ -39,27 +47,49 @@ public final class FilteredHoppersPlugin extends JavaPlugin {
         PluginCommand rootCommand = this.getCommand("advancedhoppers");
         assert rootCommand != null;
 
-        rootCommand.setExecutor(new HelpCommandExecutor());
-        rootCommand.setTabCompleter(new HelpTabCompleter());
+        rootCommand.setExecutor(new HelpCommandExecutor(this));
 
         logger = this.getLogger();
     }
 
     public Toml getTomlConfig() {
         if (!getDataFolder().exists()) {
-            getDataFolder().mkdirs();
+            if (!getDataFolder().mkdirs()) {
+                logger.log(Level.SEVERE, "Failed to create data folder.");
+            }
         }
-        File file = new File(getDataFolder(), "config.toml");
-        if (!file.exists()) {
+
+        File tomlConfig = new File(getDataFolder(), TOML_CONFIG);
+        if (!tomlConfig.exists()) {
             try {
-                InputStream inputStream = getResource("config.toml");
+                InputStream inputStream = getResource(TOML_CONFIG);
                 assert inputStream != null;
-                Files.copy(inputStream, file.toPath());
+                Files.copy(inputStream, tomlConfig.toPath());
             } catch (final IOException e) {
                 this.logger.log(Level.SEVERE, "Artifact missing default configuration!", e);
             }
         }
-        return new Toml().read(getResource("config.toml")).read(file);
+        return new Toml().read(getResource(TOML_CONFIG)).read(tomlConfig);
+    }
+
+    public Toml getTomlLocale() {
+        if (!getDataFolder().exists()) {
+            if (!getDataFolder().mkdirs()) {
+                logger.log(Level.SEVERE, "Failed to create data folder.");
+            }
+        }
+
+        File tomlConfig = new File(getDataFolder(), TOML_LOCALE);
+        if (!tomlConfig.exists()) {
+            try {
+                InputStream inputStream = getResource(TOML_LOCALE);
+                assert inputStream != null;
+                Files.copy(inputStream, tomlConfig.toPath());
+            } catch (final IOException e) {
+                this.logger.log(Level.SEVERE, "Artifact missing default configuration!", e);
+            }
+        }
+        return new Toml().read(getResource(TOML_LOCALE)).read(tomlConfig);
     }
 
     private void registerListeners(Listener... listeners) {

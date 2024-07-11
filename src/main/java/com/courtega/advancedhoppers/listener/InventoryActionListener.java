@@ -1,6 +1,6 @@
 package com.courtega.advancedhoppers.listener;
 
-import com.courtega.advancedhoppers.FilteredHoppersPlugin;
+import com.courtega.advancedhoppers.AdvancedHoppersPlugin;
 import com.moandjiezana.toml.Toml;
 import org.bukkit.*;
 import org.bukkit.block.Hopper;
@@ -23,32 +23,31 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public class InventoryActionListener implements Listener {
-
-    //region Constants
     public final static String RESET_COMMAND = ":reset";
-    public final static char NOT_OPERATOR = '!';
-    public final static char OR_OPERATOR = '|';
-    public final static char AND_OPERATOR = '&';
-    public final static char CONTAINS_OPERATOR = '*';
-    public final static char STARTS_OPERATOR = '^';
-    public final static char ENDS_OPERATOR = '$';
-    public final static char TAG_INDICATOR = '#';
-    public final static char ENCHANT_INDICATOR = '+';
-    public final static char ENCHANT_LEVEL_DELIMITER = ':';
-    //endregion
+    private final static char NOT_OPERATOR = '!';
+    private final static char OR_OPERATOR = '|';
+    private final static char AND_OPERATOR = '&';
+    private final static char CONTAINS_OPERATOR = '*';
+    private final static char STARTS_OPERATOR = '^';
+    private final static char ENDS_OPERATOR = '$';
+    private final static char TAG_INDICATOR = '#';
+    private final static char ENCHANT_INDICATOR = '+';
+    private final static char ENCHANT_LEVEL_DELIMITER = ':';
+
+    private final static Map<Integer, Integer> ProhibitedItemsEx = new HashMap<>();
     public final long DiscardedItemCacheEntryExpiry;
-
+    private final AdvancedHoppersPlugin Plugin;
     private final BukkitScheduler Scheduler;
-    private final FilteredHoppersPlugin Plugin;
-    private final Map<Integer, Integer> ProhibitedItemsEx = new HashMap<>();
 
-    public InventoryActionListener(FilteredHoppersPlugin plugin) {
+    public InventoryActionListener(AdvancedHoppersPlugin plugin) {
         this.Plugin = plugin;
         Toml tomlConfig = plugin.getTomlConfig();
         this.Scheduler = plugin.getServer().getScheduler();
 
-        this.DiscardedItemCacheEntryExpiry = tomlConfig.getTable("Technical").getLong("discarded_item_cache_entry_expiry");
+        this.DiscardedItemCacheEntryExpiry = tomlConfig.getTable("Technical").getLong("cache_entry_expiry");
     }
+
+    // region Exposed Methods
 
     public static Map<String, String> getConstants() {
         Map<String, String> constants = new HashMap<>();
@@ -64,35 +63,10 @@ public class InventoryActionListener implements Listener {
         return constants;
     }
 
-    //region Private Methods
-    private static int getFurthestEmptySlot(ItemStack[] inventoryContents) {
-        final int inventoryLength = inventoryContents.length;
-        int slotPosition = 0;
-        for (int i = inventoryLength; i != 0; i--) {
-            ItemStack slotContents = inventoryContents[i - 1];
-            if (slotContents == null) {
-                slotPosition = i - 1;
-                break;
-            }
-        }
-        return slotPosition;
-    }
+    // endregion
 
-    private static int getNearestOccupiedSlot(ItemStack[] inventoryContents) {
-        final int inventoryLength = inventoryContents.length;
-        int slotPosition = inventoryLength - 1;
-        for (int i = 0; i < (inventoryLength - 1); i++) {
-            ItemStack slotContents = inventoryContents[i];
-            if (slotContents != null) {
-                slotPosition = i;
-                break;
-            }
-        }
-        return slotPosition;
-    }
-    //endregion
+    // region Event Handlers
 
-    //region Filter Logic
     private static boolean isItemProhibited(final ItemStack itemStack, final String filterPattern) {
         boolean orSubOperandResultantBoolean = false;
 
@@ -159,9 +133,37 @@ public class InventoryActionListener implements Listener {
         }
         return true;
     }
-    //endregion
 
-    //region Event Handlers
+    private static int getFurthestEmptySlot(ItemStack[] inventoryContents) {
+        final int inventoryLength = inventoryContents.length;
+        int slotPosition = 0;
+        for (int i = inventoryLength; i != 0; i--) {
+            ItemStack slotContents = inventoryContents[i - 1];
+            if (slotContents == null) {
+                slotPosition = i - 1;
+                break;
+            }
+        }
+        return slotPosition;
+    }
+
+    // endregion
+
+    // region Internal Logic
+
+    private static int getNearestOccupiedSlot(ItemStack[] inventoryContents) {
+        final int inventoryLength = inventoryContents.length;
+        int slotPosition = inventoryLength - 1;
+        for (int i = 0; i < (inventoryLength - 1); i++) {
+            ItemStack slotContents = inventoryContents[i];
+            if (slotContents != null) {
+                slotPosition = i;
+                break;
+            }
+        }
+        return slotPosition;
+    }
+
     @EventHandler
     public void onInventoryPickupItem(InventoryPickupItemEvent event) {
         final Inventory destinationInventory = event.getInventory();
@@ -177,9 +179,9 @@ public class InventoryActionListener implements Listener {
 
         String destinationObjectName;
         if (destinationObject instanceof Hopper hopper) {
-            destinationObjectName = FilteredHoppersPlugin.serialiseComponent(hopper.customName());
+            destinationObjectName = AdvancedHoppersPlugin.serialiseComponent(hopper.customName());
         } else if (destinationObject instanceof HopperMinecart hopperMinecart) {
-            destinationObjectName = FilteredHoppersPlugin.serialiseComponent(hopperMinecart.customName());
+            destinationObjectName = AdvancedHoppersPlugin.serialiseComponent(hopperMinecart.customName());
         } else {
             return;
         }
@@ -204,9 +206,9 @@ public class InventoryActionListener implements Listener {
 
         final String destinationObjectName;
         if (destinationObject instanceof Hopper hopper) {
-            destinationObjectName = FilteredHoppersPlugin.serialiseComponent(hopper.customName());
+            destinationObjectName = AdvancedHoppersPlugin.serialiseComponent(hopper.customName());
         } else if (destinationObject instanceof HopperMinecart hopperMinecart) {
-            destinationObjectName = FilteredHoppersPlugin.serialiseComponent(hopperMinecart.customName());
+            destinationObjectName = AdvancedHoppersPlugin.serialiseComponent(hopperMinecart.customName());
         } else {
             return;
         }
@@ -236,5 +238,6 @@ public class InventoryActionListener implements Listener {
             }, 1);
         }
     }
+
     //endregion
 }
