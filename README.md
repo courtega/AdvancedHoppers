@@ -57,6 +57,8 @@ mainly a side project for me to improve my Java skills, but I will try to update
 I don't care if you use this plugin or its code to go make your own thing, but you must give me credit, and your project
 must be licensed under GPLv3, because that's how GPLv3 works.
 
+I see you copying my changes without crediting me; do not do it again. Thanks
+
 ## Support
 
 If you want to show your appreciation for the weird little plugins I work on, the best thing you can do is share them
