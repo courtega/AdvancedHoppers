@@ -1,8 +1,10 @@
 package com.courtega.advancedhoppers;
 
 import com.courtega.advancedhoppers.cmds.HelpCommandExecutor;
-import com.courtega.advancedhoppers.listener.HopperRenameListener;
-import com.courtega.advancedhoppers.listener.InventoryActionListener;
+import com.courtega.advancedhoppers.dependencies.Metrics;
+import com.courtega.advancedhoppers.listener.ExpressionEditListener;
+import com.courtega.advancedhoppers.listener.InventoryMoveListener;
+import com.courtega.advancedhoppers.listener.InventoryPickupListener;
 import com.moandjiezana.toml.Toml;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -15,19 +17,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public final class AdvancedHoppersPlugin extends JavaPlugin {
+public final class AdvancedHoppers extends JavaPlugin {
     private final static String TOML_CONFIG = "config.toml";
     private final static String TOML_LOCALE = "locale.toml";
-    private final static ArrayList<String> TOML_CONFIGS = new ArrayList<>() {
-        {
-            add("config.toml");
-            add("locale.toml");
-        }
-    };
 
     public Logger logger;
 
@@ -37,9 +32,14 @@ public final class AdvancedHoppersPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        final int pluginId = 22638;
+        Metrics metrics = new Metrics(this, pluginId);
+
         registerListeners(
-                new HopperRenameListener(this),
-                new InventoryActionListener(this)
+                // new HopperRenameListener(this),
+                new ExpressionEditListener(this),
+                new InventoryMoveListener(this),
+                new InventoryPickupListener(this)
         );
 
         this.getTomlConfig();

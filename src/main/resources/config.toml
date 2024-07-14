@@ -2,10 +2,13 @@
 cancellation_radius = 7         # Automatically cancel edit action after player wanders this far from hopper
 input_prompt_timeout = 20       # Automatically cancel edit action after this amount of time (in seconds) has passed
 
+[Audio]
+expression_edit_sound = "ENTITY_EXPERIENCE_ORB_PICKUP"
+expression_confirm_sound = "UI_CARTOGRAPHY_TABLE_TAKE_RESULT"
+expression_cancel_sound = "BLOCK_ANVIL_LAND"
+
 [Technical]
 cache_entry_expiry = 5          # Clears ignored item hashmap after this amount of time (in seconds) has passed
 
 [TODO]
-enable_sound_fx = true
-enable_msgs = true
 check_for_updates = true

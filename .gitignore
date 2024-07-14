@@ -1,12 +1,12 @@
 # User-specific stuff
 .idea/
+.gradle/
+out/
+build/
 
 *.iml
 *.ipr
 *.iws
-
-# IntelliJ
-out/
 
 # Compiled class file
 *.class
